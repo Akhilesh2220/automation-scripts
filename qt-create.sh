@@ -114,6 +114,34 @@ int main(int argc, char *argv[]) {
 }
 EOL
 
+# Create .gitignore
+cat <<EOL > .gitignore
+# Build folders
+/build/
+/cmake-build-debug/
+/CMakeFiles/
+/CMakeCache.txt
+Makefile
+cmake_install.cmake
+
+# Qt Creator files
+*.pro.user
+*.qbs.user
+*.qmake.stash
+*.moc
+*.obj
+*.o
+*.so
+*.exe
+*.dll
+
+# MacOS
+.DS_Store
+EOL
+
+
+
+
 echo "Qt project '$project_name' created successfully."
 
 mkdir -p build
