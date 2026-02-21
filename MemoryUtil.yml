@@ -1,0 +1,24 @@
+---
+- name: Add target host dynamically
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Add target host
+      add_host:
+        name: dynamic_target
+        ansible_host: "{{ target_ip }}"
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+        groups: dynamic_group
+
+- name: Fetch memory utilization
+  hosts: dynamic_group
+  gather_facts: yes
+
+  tasks:
+    - name: Show memory details
+      debug:
+        msg:
+          - "Total Memory: {{ ansible_memtotal_mb }} MB"
+          - "Free Memory: {{ ansible_memfree_mb }} MB"
+          - "Used Memory: {{ ansible_memtotal_mb - ansible_memfree_mb }} MB"
+          - "Memory Usage %: {{ ((ansible_memtotal_mb - ansible_memfree_mb) / ansible_memtotal_mb * 100) | round(2) }} %"
