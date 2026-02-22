@@ -1,0 +1,28 @@
+---
+- name: Add Windows target dynamically
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Add Windows host
+      add_host:
+        name: windows_target
+        ansible_host: "{{ target_ip }}"
+        ansible_connection: winrm
+        ansible_winrm_transport: ntlm
+        ansible_winrm_server_cert_validation: ignore
+        ansible_port: 5986
+        groups: windows_group
+
+- name: Fetch Windows memory utilization
+  hosts: windows_group
+  gather_facts: yes
+
+  tasks:
+    - name: Show memory details
+      debug:
+        msg:
+          - "Total Memory: {{ ansible_memtotal_mb }} MB"
+          - "Free Memory: {{ ansible_memfree_mb }} MB"
+          - "Used Memory: {{ ansible_memtotal_mb - ansible_memfree_mb }} MB"
+          - "Memory Usage %: {{ ((ansible_memtotal_mb - ansible_memfree_mb) / ansible_memtotal_mb * 100) | round(2) }} %"
