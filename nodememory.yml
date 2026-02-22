@@ -1,0 +1,14 @@
+---
+- name: Check Memory Utilization
+  hosts: "{{ target_host }}"
+  gather_facts: false
+  tasks:
+    - name: Get memory usage
+      ansible.builtin.shell:
+        cmd: "free | awk '/Mem:/ {printf \"%.2f\", $3/$2 * 100}'"
+      register: mem_result
+      changed_when: false
+
+    - name: Output metric
+      ansible.builtin.debug:
+        msg: "METRIC_VALUE={{ mem_result.stdout }}"
